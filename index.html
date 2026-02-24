@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CineMax — Film & Dizi İzle</title>
+<title>Ne İzlesen — Film & Dizi İzle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 <style>
@@ -584,7 +584,7 @@ body.light .info-card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
 
 <!-- NAV -->
 <nav id="nav">
-  <a class="logo" href="#" onclick="navigate('home');return false">CINE<span>MAX</span></a>
+  <a class="logo" href="#" onclick="navigate('home');return false">NE <span>İZLESEN</span></a>
   <ul class="nav-links">
     <li><a href="#" id="nav-home" class="active" onclick="navigate('home');return false">Ana Sayfa</a></li>
     <li><a href="#" id="nav-movies" onclick="navigate('movies');return false">Filmler</a></li>
@@ -597,7 +597,7 @@ body.light .info-card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
     <div class="search-wrap">
       <div class="search-bar">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" placeholder="Ara..." id="searchInput" autocomplete="off">
+        <input type="search" placeholder="Film, dizi, oyuncu ara..." id="searchInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="neizlesen-search" role="searchbox">
         <div class="search-dropdown" id="searchDrop">
           <div class="sug-header">Sonuçlar</div>
           <div id="sugList"><div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Aramak için yazın...</div></div>
@@ -632,12 +632,13 @@ body.light .info-card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
 <div class="page" id="page-calendar"></div>
 <div class="page" id="page-person"></div>
 <div class="page" id="page-404"></div>
+<div class="page" id="page-dmca"></div>
 
 <!-- MOBILE OVERLAY + MENU -->
 <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-menu" id="mobileMenu">
   <div class="mm-head">
-    <div class="mm-logo">CINE<span>MAX</span></div>
+    <div class="mm-logo">NE <span>İZLESEN</span></div>
     <button class="mm-close" onclick="closeMobileMenu()">✕</button>
   </div>
   <div class="mm-user" id="mmUser"></div>
@@ -672,7 +673,7 @@ body.light .info-card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
   <div class="modal auth-modal">
     <button class="modal-x" onclick="closeModal('authModal')">✕</button>
     <div class="am-head">
-      <div class="am-logo">CINE<span>MAX</span></div>
+      <div class="am-logo">NE <span>İZLESEN</span></div>
       <p class="am-sub" id="amSub">Hesabına giriş yap</p>
     </div>
     <div class="am-tabs">
@@ -682,15 +683,15 @@ body.light .info-card { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
     <div class="am-body">
       <div class="am-err" id="amErr"></div>
       <div id="amLogin">
-        <div class="fg"><label>E-posta</label><input type="email" id="lEmail" placeholder="ornek@email.com"></div>
-        <div class="fg"><label>Şifre</label><input type="password" id="lPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="fg"><label>E-posta</label><input type="email" id="lEmail" name="email" placeholder="ornek@email.com" autocomplete="email"></div>
+        <div class="fg"><label>Şifre</label><input type="password" id="lPass" name="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
         <button class="btn-auth" onclick="doLogin()">GİRİŞ YAP</button>
         <p class="am-link">Hesabın yok mu? <a href="#" onclick="switchAuth('register');return false">Üye ol</a></p>
       </div>
       <div id="amReg" style="display:none">
-        <div class="fg"><label>Ad Soyad</label><input type="text" id="rName" placeholder="Adınız Soyadınız"></div>
-        <div class="fg"><label>E-posta</label><input type="email" id="rEmail" placeholder="ornek@email.com"></div>
-        <div class="fg"><label>Şifre</label><input type="password" id="rPass" placeholder="En az 6 karakter" onkeydown="if(event.key==='Enter')doRegister()"></div>
+        <div class="fg"><label>Ad Soyad</label><input type="text" id="rName" name="name" placeholder="Adınız Soyadınız" autocomplete="name"></div>
+        <div class="fg"><label>E-posta</label><input type="email" id="rEmail" name="email" placeholder="ornek@email.com" autocomplete="email"></div>
+        <div class="fg"><label>Şifre</label><input type="password" id="rPass" name="new-password" placeholder="En az 6 karakter" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
         <button class="btn-auth" onclick="doRegister()">KAYIT OL</button>
         <p class="am-link">Hesabın var mı? <a href="#" onclick="switchAuth('login');return false">Giriş yap</a></p>
       </div>
@@ -740,6 +741,10 @@ let isDark = localStorage.getItem('cm_theme') !== 'light';
   initHistory();
   updateAuthUI();
   await loadGenres();
+
+  // Tarayıcı autocomplete'in arama kutusuna e-posta doldurmasını engelle
+  const si = document.getElementById('searchInput');
+  if (si) { si.value = ''; si.setAttribute('readonly', ''); setTimeout(() => si.removeAttribute('readonly'), 100); }
 
   // URL-based routing
   handleURL();
@@ -793,6 +798,21 @@ window.navigate = function(page, opts = {}, pushState = true) {
 };
 
 function navigateInternal(page, opts = {}) {
+  // Sayfadan ayrılırken player iframe'i durdur ve temizle
+  const playerWrap = document.getElementById('playerWrap');
+  if (playerWrap) {
+    const iframe = playerWrap.querySelector('iframe');
+    if (iframe) {
+      iframe.src = '';          // ses/video durdur
+      iframe.remove();          // DOM'dan kaldır
+    }
+  }
+  // Trailer modal açıksa kapat
+  const trailerFrame = document.getElementById('trailerFrame');
+  if (trailerFrame) trailerFrame.src = '';
+  const trailerModal = document.getElementById('trailerModal');
+  if (trailerModal) trailerModal.style.display = 'none';
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   currentPage = page;
@@ -801,7 +821,7 @@ function navigateInternal(page, opts = {}) {
   window.scrollTo({ top: 0, behavior: 'instant' });
 
   // Sayfa başlığını sıfırla (detail sayfası kendi başlığını set eder)
-  if (page !== 'detail') document.title = 'CineMax — Film & Dizi İzle';
+  if (page !== 'detail') document.title = 'Ne İzlesen — Film & Dizi İzle';
 
   const el = document.getElementById('page-' + page);
   if (!el) { render404(); document.getElementById('page-404').classList.add('active'); return; }
@@ -819,6 +839,7 @@ function navigateInternal(page, opts = {}) {
     case 'profile':  renderProfilePage(); break;
     case 'calendar': renderCalendarPage(); break;
     case 'person':   if (opts.id) renderPersonPage(opts.id); else render404(); break;
+    case 'dmca':     renderDmcaPage(); break;
     case '404':      render404(); break;
     default:         render404();
   }
@@ -1021,13 +1042,22 @@ async function renderHomePage() {
 
     <footer style="background:var(--surface);border-top:1px solid var(--border);padding:48px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-top:32px">
       <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent);margin-bottom:14px">CINE<span style="color:#fff">MAX</span></div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent);margin-bottom:14px">NE <span style="color:#fff">İZLESEN</span></div>
         <p style="font-size:14px;color:var(--muted);line-height:1.7">En iyi yabancı film ve dizileri yüksek kalitede izleyin.</p>
       </div>
       ${['Keşfet','Hesap','Destek'].map((t,i) => `<div><h4 style="font-size:11px;font-weight:600;letter-spacing:2px;color:var(--text);text-transform:uppercase;margin-bottom:16px">${t}</h4><ul style="list-style:none">${[['Filmler','Diziler','Kategoriler','Yeni Vizyonlar'],['Profil','Listelerim','Geçmiş','Ayarlar'],['Yardım','İletişim','Gizlilik','Şartlar']][i].map(x=>`<li style="margin-bottom:10px"><a href="#" style="color:var(--muted);text-decoration:none;font-size:14px" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">${x}</a></li>`).join('')}</ul></div>`).join('')}
+      <div>
+        <h4 style="font-size:11px;font-weight:600;letter-spacing:2px;color:var(--text);text-transform:uppercase;margin-bottom:16px">Yasal</h4>
+        <ul style="list-style:none">
+          <li style="margin-bottom:10px"><a href="#" onclick="navigate('dmca');return false" style="color:var(--muted);text-decoration:none;font-size:14px" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">DMCA</a></li>
+          <li style="margin-bottom:10px"><a href="#" style="color:var(--muted);text-decoration:none;font-size:14px" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Gizlilik Politikası</a></li>
+          <li style="margin-bottom:10px"><a href="#" style="color:var(--muted);text-decoration:none;font-size:14px" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Kullanım Şartları</a></li>
+          <li style="margin-bottom:10px"><a href="#" style="color:var(--muted);text-decoration:none;font-size:14px" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Çerez Politikası</a></li>
+        </ul>
+      </div>
     </footer>
     <div style="background:var(--surface);border-top:1px solid var(--border);padding:16px 48px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)">
-      <span>© 2025 CineMax. Tüm hakları saklıdır.</span><span>Türkiye 🇹🇷</span>
+      <span>© 2025 Ne İzlesen. Tüm hakları saklıdır.</span><span>Türkiye 🇹🇷</span>
     </div>
   `;
 
@@ -1382,7 +1412,7 @@ async function renderDetailPage(id, mediaType) {
     const typeLabel = mediaType === 'tv' ? 'DİZİ' : 'FİLM';
 
     // Dinamik sayfa başlığı
-    document.title = `${title} — CineMax`;
+    document.title = `${title} — Ne İzlesen`;
 
     // Seasons — only for TV
     const seasons = mediaType === 'tv'
@@ -2159,6 +2189,107 @@ function render404() {
       ANA SAYFAYA DÖN
     </button>
   </div>`;
+}
+
+// ─────────────────────────────────────────────
+// DMCA SAYFASI
+// ─────────────────────────────────────────────
+function renderDmcaPage() {
+  const el = document.getElementById('page-dmca');
+  const today = new Date().toLocaleDateString('tr-TR', { year:'numeric', month:'long', day:'numeric' });
+  el.innerHTML = `
+    <div style="max-width:860px;margin:0 auto;padding:80px 40px 120px">
+
+      <!-- Başlık -->
+      <div style="margin-bottom:48px">
+        <div style="font-size:11px;letter-spacing:3px;color:var(--accent);font-weight:600;margin-bottom:12px">HUKUKİ BİLDİRİM</div>
+        <h1 style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:2px;margin-bottom:16px">DMCA POLİTİKASI</h1>
+        <p style="color:var(--muted);font-size:14px">Son güncelleme: ${today}</p>
+      </div>
+
+      <!-- Uyarı kutusu -->
+      <div style="background:linear-gradient(135deg,rgba(229,9,20,.08),rgba(229,9,20,.03));border:1px solid rgba(229,9,20,.25);border-radius:12px;padding:24px 28px;margin-bottom:48px">
+        <div style="font-size:13px;font-weight:600;color:var(--accent);letter-spacing:1px;margin-bottom:8px">⚠️ ÖNEMLİ UYARI</div>
+        <p style="font-size:14px;line-height:1.75;color:rgba(232,234,240,.8);margin:0">
+          Ne İzlesen, herhangi bir film veya dizi içeriğini sunucularında barındırmamaktadır. Platformumuz yalnızca üçüncü taraf kaynaklara bağlantı sağlayan bir arama ve dizinleme hizmetidir. Tüm içerikler harici kaynaklardan gömülerek sunulmaktadır.
+        </p>
+      </div>
+
+      ${[
+        {
+          num: '01',
+          title: 'Platformumuzun Niteliği',
+          content: `Ne İzlesen ("Platform"), kullanıcıların film ve dizi içeriklerine erişmesine olanak tanıyan bir arama motoru ve içerik dizinleme hizmetidir. Platform, hiçbir içeriği kendi sunucularında depolamaz, yüklemez veya yayınlamaz. Sitede yer alan tüm içerikler; The Movie Database (TMDB) API'si aracılığıyla meta verisi çekilen ve bağımsız üçüncü taraf barındırma platformlarından gömülen medyalardır. Bu nedenle Platform, bir "internet servis sağlayıcısı" statüsünde olup DMCA'nın 512(c) maddesi kapsamındaki "güvenli liman" (safe harbor) korumasından yararlanmaktadır.`
+        },
+        {
+          num: '02',
+          title: 'Telif Hakkı İhlali Bildirimi (DMCA Takedown)',
+          content: `Telif hakkına sahip olduğunuz veya temsil ettiğiniz bir içeriğin platformumuz üzerinden erişilebilir hale getirildiğini düşünüyorsanız, aşağıdaki bilgileri içeren yazılı bir bildirim gönderebilirsiniz. DMCA kapsamında geçerli bir bildirim şu unsurları içermelidir:<br><br>
+          <div style="background:var(--card);border-radius:10px;padding:20px 24px;margin-top:12px">
+            ${[
+              ['1.', 'İhlal edildiğini iddia ettiğiniz telif hakkına sahip eserin açık tanımı'],
+              ['2.', 'İhlal ettiğini düşündüğünüz içeriğin platformumuzdaki tam URL\'si veya konumu'],
+              ['3.', 'Sizi veya temsil ettiğiniz kurumu tanımlamaya yetecek iletişim bilgileriniz (ad, adres, telefon, e-posta)'],
+              ['4.', 'Söz konusu kullanımın telif hakkı sahibi, temsilcisi veya kanun tarafından yetkilendirilmediğine dair iyi niyetli beyan'],
+              ['5.', 'Bildirimde yer alan bilgilerin doğru olduğuna ve telif hakkı sahibi adına hareket etme yetkisine sahip olduğunuza dair yeminli beyan'],
+              ['6.', 'Bildirimin imzası (fiziksel veya elektronik)'],
+            ].map(([n,t]) => `<div style="display:flex;gap:12px;margin-bottom:14px;font-size:14px;line-height:1.6"><span style="color:var(--accent);font-weight:600;flex-shrink:0">${n}</span><span style="color:rgba(232,234,240,.75)">${t}</span></div>`).join('')}
+          </div>`
+        },
+        {
+          num: '03',
+          title: 'Bildirim Gönderme Adresi',
+          content: `DMCA bildirimlerinizi aşağıdaki adrese iletebilirsiniz:<br><br>
+          <div style="background:var(--card);border-radius:10px;padding:20px 24px;display:grid;gap:10px">
+            <div style="font-size:14px;color:rgba(232,234,240,.75)">📧 <strong style="color:var(--text)">E-posta:</strong> dmca@neizlesen.com</div>
+            <div style="font-size:14px;color:rgba(232,234,240,.75)">⏱ <strong style="color:var(--text)">Yanıt süresi:</strong> Geçerli bildirimlere 72 saat içinde yanıt verilir</div>
+            <div style="font-size:14px;color:rgba(232,234,240,.75)">🌐 <strong style="color:var(--text)">Platform:</strong> neizlesen.com</div>
+          </div>`
+        },
+        {
+          num: '04',
+          title: 'İşlem Süreci',
+          content: `Geçerli bir DMCA bildirimi aldığımızda şu adımları izleriz:<br><br>
+          <div style="background:var(--card);border-radius:10px;padding:20px 24px;margin-top:12px">
+            ${[
+              ['72 saat içinde', 'Bildirimi inceleyerek ilgili içeriğe platformumuzdan erişimi devre dışı bırakır ya da kaldırırız'],
+              ['5 iş günü içinde', 'İçerik sağlayıcısına durumu bildiririz'],
+              ['10-14 gün içinde', 'İçerik sağlayıcısından itiraz gelmesi halinde hukuki süreç başlatılır'],
+            ].map(([s,t]) => `<div style="display:flex;gap:16px;margin-bottom:14px;font-size:14px;line-height:1.6;align-items:flex-start"><span style="color:var(--accent);font-weight:600;flex-shrink:0;min-width:140px">${s}</span><span style="color:rgba(232,234,240,.75)">${t}</span></div>`).join('')}
+          </div>`
+        },
+        {
+          num: '05',
+          title: 'Karşı Bildirim (Counter-Notice)',
+          content: `Kaldırılan içeriğin kendi orijinal eseriniz olduğunu veya kaldırmanın hatalı yapıldığını düşünüyorsanız, DMCA 512(g) kapsamında karşı bildirim gönderme hakkınız bulunmaktadır. Karşı bildiriminiz aynı iletişim adresine gönderilebilir. Geçerli bir karşı bildirim aldığımızda, bildiren tarafı 10 iş günü içinde bilgilendiririz; bildiren tarafın bu süre içinde mahkeme kararı almaması durumunda içerik yeniden erişime açılabilir.`
+        },
+        {
+          num: '06',
+          title: 'Tekrarlayan İhlalciler Politikası',
+          content: `Ne İzlesen, telif hakkı ihlalini tekrarlayan kullanıcıların hesaplarını uygun durumlarda askıya alma veya sonlandırma politikasını benimsemiştir. Bu politika, DMCA'nın 512(i) maddesi kapsamındaki gerekliliklere uyum amacıyla uygulanmaktadır.`
+        },
+        {
+          num: '07',
+          title: 'Sorumluluk Reddi',
+          content: `Platform, üçüncü taraf içeriklerin telif hakkı durumunu önceden denetleme yükümlülüğü taşımamaktadır. Kullanıcıların platformumuzu aracılığıyla ulaştığı harici siteler ve bu sitelerdeki içerikler, söz konusu sitelerin kendi sorumluluğundadır. Ne İzlesen, yalnızca iyi niyet ilkesi çerçevesinde geçerli bildirimlere hızla yanıt vermeyi taahhüt eder.`
+        },
+      ].map(s => `
+        <div style="margin-bottom:48px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent);opacity:.4;line-height:1">${s.num}</span>
+            <h2 style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px">${s.title}</h2>
+          </div>
+          <div style="font-size:15px;line-height:1.85;color:rgba(232,234,240,.75);padding-left:52px">${s.content}</div>
+        </div>
+      `).join('')}
+
+      <!-- Alt bilgi -->
+      <div style="border-top:1px solid var(--border);padding-top:32px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap">
+        <p style="font-size:13px;color:var(--muted);margin:0">Bu politika herhangi bir bildirim yapılmaksızın değiştirilebilir.</p>
+        <button class="btn-sm" onclick="navigate('home')" style="margin-top:0">← Ana Sayfa</button>
+      </div>
+    </div>
+  `;
 }
 
 // ─────────────────────────────────────────────
